@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SM-Post", "SM-Post", "{4E60
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Post.Query", "Post.Query", "{F2DD2761-2C66-4F49-9398-95204EDA935A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{B13C134A-DAB5-41ED-B632-BEA474402F3E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Post.Command", "Post.Command", "{B13C134A-DAB5-41ED-B632-BEA474402F3E}"
 EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution

@@ -1,12 +1,5 @@
 ﻿using CQRS.Core.Domain;
-using CQRS.Core.Messages;
 using Post.Common.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Post.Command.Domain.Aggregates
 {
     public class PostAggregate : AggregateRoot

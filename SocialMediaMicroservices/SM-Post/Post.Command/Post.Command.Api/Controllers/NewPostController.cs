@@ -1,4 +1,5 @@
-﻿using CQRS.Core.Infrastructure;
+﻿using CQRS.Core.Exceptions;
+using CQRS.Core.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Post.Command.Api.Commands;
 using Post.Command.Api.DTOs;
@@ -45,7 +46,7 @@ namespace Post.Command.Api.Controllers
                     Message= ex.Message,    
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 const string SAFE_ERROR_MESSAGE = "Error while processing request to create a new post!";
                 _logger.Log(LogLevel.Error,ex,SAFE_ERROR_MESSAGE);

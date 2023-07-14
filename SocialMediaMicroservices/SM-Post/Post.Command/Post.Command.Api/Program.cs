@@ -1,8 +1,10 @@
 using Confluent.Kafka;
 using CQRS.Core.Domain;
+using CQRS.Core.Events;
 using CQRS.Core.Handlers;
 using CQRS.Core.Infrastructure;
 using CQRS.Core.Producers;
+using MongoDB.Bson.Serialization;
 using Post.Command.Api.Commands;
 using Post.Command.Domain.Aggregates;
 using Post.Command.Infrastructure.Config;
@@ -11,8 +13,17 @@ using Post.Command.Infrastructure.Handlers;
 using Post.Command.Infrastructure.Producers;
 using Post.Command.Infrastructure.Repositories;
 using Post.Command.Infrastructure.Stores;
+using Post.Common.Events;
 
 var builder = WebApplication.CreateBuilder(args);
+BsonClassMap.RegisterClassMap<BaseEvent>();
+BsonClassMap.RegisterClassMap<PostCreatedEvent>();
+BsonClassMap.RegisterClassMap<MessageUpdatedEvent>();
+BsonClassMap.RegisterClassMap<PostLikedEvent>();
+BsonClassMap.RegisterClassMap<CommentAddedEvent>();
+BsonClassMap.RegisterClassMap<CommentUpdatedEvent>();
+BsonClassMap.RegisterClassMap<CommentRemovedEvent>();
+BsonClassMap.RegisterClassMap<PostRemovedEvent>();
 
 builder.Services.Configure<MongoDbConfig>(builder.Configuration.GetSection(nameof(MongoDbConfig)));
 builder.Services.Configure<ProducerConfig>(builder.Configuration.GetSection(nameof(ProducerConfig)));

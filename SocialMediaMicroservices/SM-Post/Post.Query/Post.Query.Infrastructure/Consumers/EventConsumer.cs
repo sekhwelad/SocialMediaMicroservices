@@ -21,30 +21,38 @@ namespace Post.Query.Infrastructure.Consumers
 
         public void Consume(string topic)
         {
-            using var consumer = new ConsumerBuilder<string,string>(_consumerConfig)
-                .SetKeyDeserializer(Deserializers.Utf8)
-                .SetValueDeserializer(Deserializers.Utf8)
-                .Build();
-
-            consumer.Subscribe(topic);
-
-            while (true)
+            try
             {
-                var consumeResult = consumer.Consume();
+                using var consumer = new ConsumerBuilder<string, string>(_consumerConfig)
+                       .SetKeyDeserializer(Deserializers.Utf8)
+                       .SetValueDeserializer(Deserializers.Utf8)
+                       .Build();
 
-                if (consumeResult?.Message == null) continue;
+                consumer.Subscribe(topic);
 
-                var options = new JsonSerializerOptions { Converters = { new EventJsonConverter() } };
-                var @event = JsonSerializer.Deserialize<BaseEvent>(consumeResult.Message.Value, options);
-                var handlerMethod = _eventHandler.GetType().GetMethod("On", new Type[] { @event.GetType() });
-
-                if (handlerMethod == null)
+                while (true)
                 {
-                    throw new ArgumentNullException(nameof(handlerMethod),"Could not find event handler method");
-                }
+                    var consumeResult = consumer.Consume();
 
-                handlerMethod.Invoke(_eventHandler, new object[] { @event });
-                consumer.Commit(consumeResult);
+                    if (consumeResult?.Message == null) continue;
+
+                    var options = new JsonSerializerOptions { Converters = { new EventJsonConverter() } };
+                    var @event = JsonSerializer.Deserialize<BaseEvent>(consumeResult.Message.Value, options);
+                    var handlerMethod = _eventHandler.GetType().GetMethod("On", new Type[] { @event.GetType() });
+
+                    if (handlerMethod == null)
+                    {
+                        throw new ArgumentNullException(nameof(handlerMethod), "Could not find event handler method");
+                    }
+
+                    handlerMethod.Invoke(_eventHandler, new object[] { @event });
+                    consumer.Commit(consumeResult);
+                }
+            }
+            catch (Exception ex)
+            {
+                string mas = ex.Message;
+                throw;
             }
         }
     }

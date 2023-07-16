@@ -32,6 +32,7 @@ namespace Post.Query.Infrastructure.Consumers
 
                 while (true)
                 {
+                  
                     var consumeResult = consumer.Consume();
 
                     if (consumeResult?.Message == null) continue;

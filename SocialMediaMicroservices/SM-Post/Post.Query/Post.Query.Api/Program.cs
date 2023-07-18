@@ -12,7 +12,22 @@ using Post.Query.Infrastructure.Handlers;
 using Post.Query.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
-Action<DbContextOptionsBuilder> configureDbContext = (o => o.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+
+Action<DbContextOptionsBuilder> configureDbContext;
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+if (env.Equals("Development.PostgresSQL"))
+{
+    configureDbContext = (o => o.UseLazyLoadingProxies().UseNpgsql(builder.Configuration.GetConnectionString("PostGreSQL")));
+}
+else
+{
+    configureDbContext = (o => o.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+
+}
+
+
+
 builder.Services.AddDbContext<DatabaseContext>(configureDbContext);
 builder.Services.AddSingleton<DatabaseContextFactory>(new DatabaseContextFactory(configureDbContext));
 
@@ -21,10 +36,10 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IQueryHandler, QueryHandler>();
 builder.Services.AddScoped<IEventHandler, Post.Query.Infrastructure.Handlers.EventHandler>();
 builder.Services.Configure<ConsumerConfig>(builder.Configuration.GetSection(nameof(ConsumerConfig)));
-builder.Services.AddScoped<IEventConsumer,EventConsumer>();
+builder.Services.AddScoped<IEventConsumer, EventConsumer>();
 
 //Register Query Handler Methods
-var queryHandler =builder.Services.BuildServiceProvider().GetRequiredService<IQueryHandler>();
+var queryHandler = builder.Services.BuildServiceProvider().GetRequiredService<IQueryHandler>();
 var dispatcher = new QueryDispatcher();
 dispatcher.RegisterHandler<FindAllPostsQuery>(queryHandler.HandleAsync);
 dispatcher.RegisterHandler<FindPostsByIdQuery>(queryHandler.HandleAsync);
@@ -53,6 +68,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseSwagger();
+app.UseSwaggerUI();
 app.MapControllers();
 
 app.Run();

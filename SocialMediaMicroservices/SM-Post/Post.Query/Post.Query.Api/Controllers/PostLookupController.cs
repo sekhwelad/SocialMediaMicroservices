@@ -93,11 +93,11 @@ namespace Post.Query.Api.Controllers
         }
 
         [HttpGet("withLikes/{numberOfLikes}")]
-        public async Task<ActionResult> GetPostsWithLikesAsync()
+        public async Task<ActionResult> GetPostsWithLikesAsync(int numberOflikes)
         {
             try
             {
-                var posts = await _queryDispatcher.SendAsync(new FindPostsWithLikesQuery());
+                var posts = await _queryDispatcher.SendAsync(new FindPostsWithLikesQuery {NumberOfLikes=numberOflikes });
                 return SuccessResponse(posts);
             }
             catch (Exception ex)
